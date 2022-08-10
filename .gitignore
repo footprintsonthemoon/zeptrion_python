@@ -14,9 +14,9 @@ Thumbs.db
 *.pyc
 
 # Application specific files
+.vscode/settings.json
 venv
 node_modules
 .sass-cache
 dist
 pyzeptrion.egg-info
-.vscode
