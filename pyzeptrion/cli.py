@@ -23,62 +23,88 @@ import asyncio
 from pyzeptrion.blind import ZeptrionBlind
 from pyzeptrion.bulb import ZeptrionBulb
 from pyzeptrion.discover import ZeptrionRegistry
-from .const import device_types, BULB_ON, BULB_OFF, BULB_DIMDOWN, BULB_DIMUP, BULB_TOGGLE, BLIND_CLOSE, BLIND_OPEN, BLIND_STOP, TIMEOUT
+from .const import (
+    BULB_ON,
+    BULB_OFF,
+    BULB_DIMDOWN,
+    BULB_DIMUP,
+    BULB_TOGGLE,
+    BLIND_CLOSE,
+    BLIND_OPEN,
+    BLIND_STOP,
+)
+
 
 async def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('action', help='"set" or "discover"')
-    parser.add_argument('-a', '--address', help='device ip address')
-    parser.add_argument('-c', '--channel', type = int, help='channel of the device')
-    parser.add_argument('-p', '--params', help='allowed commands, "on", "off", "toggle", "stop", "move_open". "move_close"')
-    
-    myRegistry = await ZeptrionRegistry.create_registry()
-    devices = await myRegistry.get_devices(myRegistry) 
-    
+    parser.add_argument("action", help='"set" or "discover"')
+    parser.add_argument("-a", "--address", help="device ip address")
+    parser.add_argument("-c", "--channel", type=int, help="channel of the device")
+    parser.add_argument(
+        "-p",
+        "--params",
+        help='allowed commands, "on", "off", "toggle", "stop", "move_open". "move_close"',
+    )
+
+    my_registry = await ZeptrionRegistry.create_registry()
+    devices = await my_registry.get_devices(my_registry)
+
     args = parser.parse_args()
 
-    if args.action == 'discover':
+    if args.action == "discover":
         for device in devices:
             print(device)
-        
-    
-    elif args.action == 'set':
+
+    elif args.action == "set":
         if args.address is None:
-            return print('IP address is empty.')
+            return print("IP address is empty.")
         if args.channel is None:
-            return print('Channel is empty.')
+            return print("Channel is empty.")
         if args.params is None:
-            return print('Channel is empty.')
-        
-        tempDevice = None
+            return print("Channel is empty.")
+
+        temp_device = None
         for device in devices:
             if args.address == device.host and args.channel == device.chn:
-                print("Found a Zeptrion device matching the IP and Channel in the registry:")
+                print(
+                    "Found a Zeptrion device matching the IP and Channel in the registry:"
+                )
                 print(device)
                 if device.type == "Blind":
-                        tempDevice = await ZeptrionBlind.create(args.address,str(args.channel))
-                        break
+                    temp_device = await ZeptrionBlind.create(
+                        args.address, str(args.channel)
+                    )
+                    break
                 else:
-                        tempDevice = await ZeptrionBulb.create(args.address,str(args.channel))
-                        break
+                    temp_device = await ZeptrionBulb.create(
+                        args.address, str(args.channel)
+                    )
+                    break
         else:
-                return print("no device found")
-        
-        if tempDevice != None: 
-            if (tempDevice.type == "Blind" and args.params in [BLIND_CLOSE, BLIND_OPEN, BLIND_STOP]) or (tempDevice.type in ["Bulb on/off","Bulb dimmable"] and args.params in [BULB_DIMDOWN, BULB_DIMUP, BULB_OFF, BULB_ON, BULB_TOGGLE]):
-               await tempDevice.post_cmd(args.params) 
+            return print("no device found")
+
+        if temp_device is not None:
+            if (
+                temp_device.type == "Blind"
+                and args.params in [BLIND_CLOSE, BLIND_OPEN, BLIND_STOP]
+            ) or (
+                temp_device.type in ["Bulb on/off", "Bulb dimmable"]
+                and args.params
+                in [BULB_DIMDOWN, BULB_DIMUP, BULB_OFF, BULB_ON, BULB_TOGGLE]
+            ):
+                await temp_device.post_cmd(args.params)
             else:
-                print("Parameter",args.params," can not be used on", tempDevice.type)
-                await tempDevice.close()   
-                del tempDevice
-                return 
+                print("Parameter", args.params, " can not be used on", temp_device.type)
+                await temp_device.close()
+                del temp_device
+                return
         print("Succesfully changed the state of the device!")
-        print(tempDevice)
-        await tempDevice.close()   
-        del tempDevice      
-              
+        print(temp_device)
+        await temp_device.close()
+        del temp_device
+
 
 if __name__ == "__main__":
-    #logging.basicConfig(level=logging.INFO)
+    # logging.basicConfig(level=logging.INFO)
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())

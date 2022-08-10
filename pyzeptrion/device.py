@@ -1,8 +1,8 @@
 """Base class for the representation of Zeptrion devices"""
-import aiohttp
-import async_timeout
 import asyncio
+import async_timeout
 import hashlib
+import aiohttp
 import pkg_resources
 import socket
 from typing import Any, Mapping, Optional

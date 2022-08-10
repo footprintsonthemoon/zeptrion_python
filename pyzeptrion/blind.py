@@ -1,12 +1,5 @@
 """ Class to represent a blind attached to a Zeptrion device """
 
-"""
-Supported functions:
-- move_open
-- move_close
-- stop
-"""
-
 import aiohttp
 import logging
 from pyzeptrion.device import ZeptrionDevice

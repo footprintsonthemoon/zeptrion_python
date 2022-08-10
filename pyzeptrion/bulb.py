@@ -1,6 +1,6 @@
 """Class to represent a bulb attaches to a Zeptrion device"""
-import aiohttp
 import logging
+import aiohttp
 from pyzeptrion.device import ZeptrionDevice
 from pyzeptrion.const import BULB_DIMDOWN, BULB_DIMUP, BULB_OFF, BULB_ON
 

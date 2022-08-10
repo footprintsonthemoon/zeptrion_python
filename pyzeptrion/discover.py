@@ -2,7 +2,6 @@
 
 from zeroconf.asyncio import AsyncServiceBrowser, AsyncServiceInfo, AsyncZeroconf
 from pyzeptrion.bulb import ZeptrionBulb
-from typing import Any, Mapping, Optional, List
 import logging
 import asyncio
 
@@ -84,12 +83,12 @@ class ZeptrionRegistry(object):
                 host = info.parsed_addresses()[0]
                 channels = str(info.properties[b"type"]).split("-")[1]
                 for chn in range(int(channels)):
-                    tempDevice = await ZeptrionBulb.create(host, str(chn + 1))
-                    if tempDevice._type != "NaN":
-                        device = ZeptrionRegistryDevice(host, chn + 1, tempDevice._type)
+                    temp_device = await ZeptrionBulb.create(host, str(chn + 1))
+                    if temp_device._type != "NaN":
+                        device = ZeptrionRegistryDevice(host, chn + 1, temp_device._type)
                         self._devices.append(device)
-                    await tempDevice.close()
-                    del tempDevice
+                    await temp_device.close()
+                    del temp_device
 
         finally:
             await service_browser.async_cancel()
