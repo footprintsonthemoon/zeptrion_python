@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyzeptrion"
-version = "0.1.2"
+version = "0.1.4"
 description = "Classes to interact with Zeptrion devices made by Feller"
 readme = "README.md"
 authors = [{ name = "Thierry Perroud", email = "astronaut@footprintsonthemoon.ch" }]
@@ -24,6 +24,7 @@ keywords = ["zeptrion", "home assistant", "library"]
 dependencies = [
     "asyncio",
     "aiohttp",
+    "zeroconf",
 ]
 requires-python = ">=3.8"
 

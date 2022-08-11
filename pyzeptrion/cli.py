@@ -48,12 +48,11 @@ async def main():
     )
 
     my_registry = await ZeptrionRegistry.create_registry(ZeptrionRegistry)
-    devices = await my_registry.get_devices(my_registry)
 
     args = parser.parse_args()
 
     if args.action == "discover":
-        for device in devices:
+        for device in my_registry.devices:
             print(device)
 
     elif args.action == "set":
@@ -65,7 +64,7 @@ async def main():
             return print("Channel is empty.")
 
         temp_device = None
-        for device in devices:
+        for device in my_registry.devices:
             if args.address == device.host and args.channel == device.chn:
                 print(
                     "Found a Zeptrion device matching the IP and Channel in the registry:"

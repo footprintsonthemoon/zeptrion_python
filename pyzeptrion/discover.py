@@ -80,7 +80,7 @@ class ZeptrionRegistry(object):
             my_async_zeroconf.zeroconf, "_zapp._tcp.local.", listener
         )
         await asyncio.sleep(5)
-        self._devices = []
+        self.devices = []
 
         try:
             for info in listener.get_data():
@@ -92,7 +92,7 @@ class ZeptrionRegistry(object):
                     )
                     if temp_device.type != "NaN":
                         device = ZeptrionRegistryDevice(host, chn + 1, temp_device.type)
-                        self._devices.append(device)
+                        self.devices.append(device)
                     await temp_device.close()
                     del temp_device
 
@@ -101,9 +101,10 @@ class ZeptrionRegistry(object):
             if not my_async_zeroconf:
                 await my_async_zeroconf.close()
 
-        self._devices.sort(key=lambda x: x.type)
+        self.devices.sort(key=lambda x: x.type)
         return self
 
-    async def get_devices(self):
+    @property
+    def devices(self):
         """access to protected self._devices."""
         return self._devices
