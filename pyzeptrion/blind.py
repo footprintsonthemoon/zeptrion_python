@@ -1,9 +1,9 @@
 """ Class to represent a blind attached to a Zeptrion device """
 
-import aiohttp
 import logging
+import aiohttp
 from pyzeptrion.device import ZeptrionDevice
-from pyzeptrion.const import device_types, BLIND_CLOSE, BLIND_OPEN, BLIND_STOP
+from pyzeptrion.const import BLIND_CLOSE, BLIND_OPEN, BLIND_STOP
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ class ZeptrionBlind(ZeptrionDevice):
         super().__init__(host, chn, session)
 
     @classmethod
-    async def create(self, host, chn):
+    async def create(cls, self, host, chn):
         """Called before __init__ to assign values to the object created"""
         self = ZeptrionBlind(host, chn)
         await self._set_description()
@@ -53,7 +53,7 @@ class ZeptrionBlind(ZeptrionDevice):
         self._state = BLIND_STOP
         return response
 
-    """ Session handling"""
+    # Session handling
 
     async def close(self) -> None:
 

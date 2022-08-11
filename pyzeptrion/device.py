@@ -1,12 +1,12 @@
 """Base class for the representation of Zeptrion devices"""
 import asyncio
-import async_timeout
 import hashlib
-import aiohttp
-import pkg_resources
 import socket
 from typing import Any, Mapping, Optional
 import xml.etree.ElementTree as ET
+import async_timeout
+import aiohttp
+import pkg_resources
 from yarl import URL
 from .exceptions import ZeptrionConnectionError
 from .const import device_types, GET_STATE_URL, GET_DESC_URL, POST_CTRL_URL, TIMEOUT
@@ -49,21 +49,19 @@ class ZeptrionDevice(object):
 
     async def _set_description(self) -> object:
         """Set the additional variables by getting the description form the devices"""
-        """The response from the API is a xml description"""
         response = await self.request(uri=self._get_desc_uri, method="GET")
         base = ET.fromstring(response)
         self._name = base.find("name").text
         self._group = base.find("group").text
         self._type = device_types[base.find("cat").text]
 
-        """ Generate a unique ID form the host and chn variables"""
+        # Generate a unique ID form the host and chn variables
         h = hashlib.sha1()
         h.update(str(self._name + self._host + str(self._chn)).encode("utf-8"))
         self._id = h.hexdigest()
 
     async def _set_state(self) -> object:
         """Get the actual state of the device and set the variable"""
-        """ The response from the API is a xml stream"""
         response = await self.request(
             uri=self._get_state_uri,
             method="GET",
@@ -73,7 +71,6 @@ class ZeptrionDevice(object):
 
     async def post_cmd(self, cmd):
         """Generic call to change the state of any devices"""
-        """ The checking if the command is suitable for the device must be done before calling this function!"""
         response = await self.request(
             uri=self._post_ctrl_uri, method="POST", data={"cmd": cmd}
         )
@@ -82,42 +79,41 @@ class ZeptrionDevice(object):
 
     @property
     def state(self) -> Optional[str]:
+        """Access to protected variable"""
         return self._state
 
     @property
     def name(self) -> Optional[str]:
+        """Access to protected variable"""
         return self._name
 
     @property
     def group(self) -> Optional[str]:
+        """Access to protected variable"""
         return self._group
 
     @property
     def chn(self) -> Optional[str]:
+        """Access to protected variable"""
         return self._chn
 
     @property
     def host(self) -> Optional[str]:
+        """Access to protected variable"""
         return self._host
 
     @property
     def type(self) -> Optional[str]:
+        """Access to protected variable"""
         return self._type
 
     @property
     def id(self) -> Optional[str]:
+        """Access to protected variable"""
         return self._id
 
     def __str__(self):
-        return "Host: {}\nChannel: {}\nName: {}\nGroup: {}\nState: {}\nType: {}\nID:{}\n\n".format(
-            self._host,
-            self._chn,
-            self._name,
-            self._group,
-            self._state,
-            self._type,
-            self._id,
-        )
+        return f"Host: {self._host}\nChannel: {self._chn}\nName: {self._name}\nGroup: {self._group}\nState: {self._state}\nType: {self._type}\nID:{self._id}\n\n"
 
     def __del__(self):
         pass
@@ -157,10 +153,10 @@ class ZeptrionDevice(object):
         text = await response.text()
         return text
 
-    """ Session handling """
+    # Session handling """
 
     async def close(self) -> None:
-
+        """close sessions"""
         if self._session and self._close_session:
             await self._session.close()
 

@@ -1,9 +1,9 @@
 """ Classes to discover Zeptrion devices in the local network"""
-
-from zeroconf.asyncio import AsyncServiceBrowser, AsyncServiceInfo, AsyncZeroconf
-from pyzeptrion.bulb import ZeptrionBulb
 import logging
 import asyncio
+from zeroconf.asyncio import AsyncServiceBrowser, AsyncServiceInfo, AsyncZeroconf
+from pyzeptrion.bulb import ZeptrionBulb
+
 
 _TIMEOUT_MS = 3000
 
@@ -18,7 +18,8 @@ class ZeptrionZeroconfListener(object):
         self.data = []
 
     def remove_service(self, zeroconf, type, name):
-        print("Service %s removed" % (name,))
+        """remove a sevice"""
+        print(f"Service ({name} removed")
 
     def add_service(self, zeroconf, zeroconf_type, name):
         """Add a device that became visible via zeroconf."""
@@ -33,6 +34,7 @@ class ZeptrionZeroconfListener(object):
     update_service = add_service
 
     def get_data(self):
+        """return the data"""
         return self.data
 
 
@@ -45,20 +47,21 @@ class ZeptrionRegistryDevice(object):
         self._type = type
 
     def __str__(self):
-        return "Host: {}\nChannel: {}\nType: {}\n".format(
-            self._host, self._chn, self._type
-        )
+        return f"Host: {self._host}\nChannel: {self._chn}\nType: {self._type}\n"
 
     @property
     def host(self) -> str:
+        """protected access to self._host"""
         return self._host
 
     @property
     def chn(self) -> int:
+        """protected access to self._chn"""
         return self._chn
 
     @property
     def type(self) -> str:
+        """protected access to self._type"""
         return self._type
 
 
@@ -69,11 +72,12 @@ class ZeptrionRegistry(object):
         self._devices = []
 
     @classmethod
-    async def create_registry(self):
-        myAsyncZeroconf = AsyncZeroconf()
+    async def create_registry(cls, self):
+        """create the registry before __init__."""
+        my_async_zeroconf = AsyncZeroconf()
         listener = ZeptrionZeroconfListener()
         service_browser = AsyncServiceBrowser(
-            myAsyncZeroconf.zeroconf, "_zapp._tcp.local.", listener
+            my_async_zeroconf.zeroconf, "_zapp._tcp.local.", listener
         )
         await asyncio.sleep(5)
         self._devices = []
@@ -83,20 +87,23 @@ class ZeptrionRegistry(object):
                 host = info.parsed_addresses()[0]
                 channels = str(info.properties[b"type"]).split("-")[1]
                 for chn in range(int(channels)):
-                    temp_device = await ZeptrionBulb.create(host, str(chn + 1))
-                    if temp_device._type != "NaN":
-                        device = ZeptrionRegistryDevice(host, chn + 1, temp_device._type)
+                    temp_device = await ZeptrionBulb.create(
+                        ZeptrionBulb, host, str(chn + 1)
+                    )
+                    if temp_device.type != "NaN":
+                        device = ZeptrionRegistryDevice(host, chn + 1, temp_device.type)
                         self._devices.append(device)
                     await temp_device.close()
                     del temp_device
 
         finally:
             await service_browser.async_cancel()
-            if not myAsyncZeroconf:
-                await myAsyncZeroconf.close()
+            if not my_async_zeroconf:
+                await my_async_zeroconf.close()
 
-        self._devices.sort(key=lambda x: x._type)
+        self._devices.sort(key=lambda x: x.type)
         return self
 
     async def get_devices(self):
+        """access to protected self._devices."""
         return self._devices

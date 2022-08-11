@@ -36,6 +36,7 @@ from .const import (
 
 
 async def main():
+    """Entry point of the cli."""
     parser = argparse.ArgumentParser()
     parser.add_argument("action", help='"set" or "discover"')
     parser.add_argument("-a", "--address", help="device ip address")
@@ -46,7 +47,7 @@ async def main():
         help='allowed commands, "on", "off", "toggle", "stop", "move_open". "move_close"',
     )
 
-    my_registry = await ZeptrionRegistry.create_registry()
+    my_registry = await ZeptrionRegistry.create_registry(ZeptrionRegistry)
     devices = await my_registry.get_devices(my_registry)
 
     args = parser.parse_args()
@@ -72,12 +73,12 @@ async def main():
                 print(device)
                 if device.type == "Blind":
                     temp_device = await ZeptrionBlind.create(
-                        args.address, str(args.channel)
+                        ZeptrionBlind, args.address, str(args.channel)
                     )
                     break
                 else:
                     temp_device = await ZeptrionBulb.create(
-                        args.address, str(args.channel)
+                        ZeptrionBulb, args.address, str(args.channel)
                     )
                     break
         else:

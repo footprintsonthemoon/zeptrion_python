@@ -1,4 +1,5 @@
 """Class to represent a bulb attaches to a Zeptrion device"""
+
 import logging
 import aiohttp
 from pyzeptrion.device import ZeptrionDevice
@@ -19,7 +20,7 @@ class ZeptrionBulb(ZeptrionDevice):
         super().__init__(host, chn, session)
 
     @classmethod
-    async def create(self, host, chn):
+    async def create(cls, self, host, chn):
         """Called before __init__ to assign values to the object"""
         self = ZeptrionBulb(host, chn)
         await self._set_description()
@@ -59,35 +60,35 @@ class ZeptrionBulb(ZeptrionDevice):
         self._state = BULB_ON
         return response
 
-    async def dim_down_t(self, t: int):
+    async def dim_down_t(self, t_milli: int):
         """dim the bulb down for t milliseconds"""
-        if 100 <= t <= 32000:
+        if 100 <= t_milli <= 32000:
             response = await self.request(
                 uri=self._post_ctrl_uri,
                 method="POST",
-                data={"cmd": BULB_DIMDOWN + "_(" + str(t) + ")"},
+                data={"cmd": BULB_DIMDOWN + "_(" + str(t_milli) + ")"},
             )
             self._state = BULB_ON
         return response
 
-    async def dim_up_t(self, t: int):
+    async def dim_up_t(self, t_milli: int):
         """dim the bulb up for t milliseconds"""
-        if 100 <= t <= 32000:
+        if 100 <= t_milli <= 32000:
             response = await self.request(
                 uri=self._post_ctrl_uri,
                 method="POST",
-                data={"cmd": BULB_DIMUP + "_(" + str(t) + ")"},
+                data={"cmd": BULB_DIMUP + "_(" + str(t_milli) + ")"},
             )
             self._state = BULB_ON
         return response
 
-    async def dim_t(self, t: int):
+    async def dim_t(self, t_milli: int):
         """dim the bulb in either direction for t milliseconds"""
-        if 100 <= t <= 32000:
+        if 100 <= t_milli <= 32000:
             response = await self.request(
-                ri=self._post_ctrl_uri,
+                uri=self._post_ctrl_uri,
                 method="POST",
-                data={"cmd": BULB_DIMUP + "_(" + str(t) + ")"},
+                data={"cmd": BULB_DIMUP + "_(" + str(t_milli) + ")"},
             )
             self._state = BULB_ON
         return response
@@ -101,7 +102,7 @@ class ZeptrionBulb(ZeptrionDevice):
         self._state = cmd
         return response
 
-    """ Session handling"""
+    # Session handling
 
     async def close(self) -> None:
 
