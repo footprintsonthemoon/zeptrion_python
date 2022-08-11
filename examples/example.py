@@ -32,7 +32,7 @@ async def main():
 
     # discover all Zeptrion devices in the network, close all blinds, open all blinds
     my_registry = await ZeptrionRegistry.create_registry(ZeptrionRegistry)
-    devices = await my_registry.get_devices(my_registry)
+    devices = my_registry.devices
     blinds = []
     for device in devices:
         if device.type == "Blind":
