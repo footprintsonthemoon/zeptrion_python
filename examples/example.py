@@ -30,12 +30,13 @@ async def main():
     await asyncio.sleep(20)
     await my_blind.close()
 
+    """
     # discover all Zeptrion devices in the network, close all blinds, open all blinds
     my_registry = await ZeptrionRegistry.create_registry(ZeptrionRegistry)
     devices = my_registry.devices
     blinds = []
     for device in devices:
-        if device.type == "Blind":
+        if device.dev_type == "Blind":
             my_blind = await ZeptrionBlind.create(
                 ZeptrionBlind, device.host, device.chn
             )
@@ -47,6 +48,7 @@ async def main():
     for blind in blinds:
         await blind.move_open()
         await blind.close()
+    """
 
 
 if __name__ == "__main__":

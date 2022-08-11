@@ -70,7 +70,7 @@ async def main():
                     "Found a Zeptrion device matching the IP and Channel in the registry:"
                 )
                 print(device)
-                if device.type == "Blind":
+                if device.dev_type == "Blind":
                     temp_device = await ZeptrionBlind.create(
                         ZeptrionBlind, args.address, str(args.channel)
                     )
@@ -85,16 +85,21 @@ async def main():
 
         if temp_device is not None:
             if (
-                temp_device.type == "Blind"
+                temp_device.dev_type == "Blind"
                 and args.params in [BLIND_CLOSE, BLIND_OPEN, BLIND_STOP]
             ) or (
-                temp_device.type in ["Bulb on/off", "Bulb dimmable"]
+                temp_device.dev_type in ["Bulb on/off", "Bulb dimmable"]
                 and args.params
                 in [BULB_DIMDOWN, BULB_DIMUP, BULB_OFF, BULB_ON, BULB_TOGGLE]
             ):
                 await temp_device.post_cmd(args.params)
             else:
-                print("Parameter", args.params, " can not be used on", temp_device.type)
+                print(
+                    "Parameter",
+                    args.params,
+                    " can not be used on",
+                    temp_device.dev_type,
+                )
                 await temp_device.close()
                 del temp_device
                 return

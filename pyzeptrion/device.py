@@ -44,8 +44,8 @@ class ZeptrionDevice(object):
         self._name = None
         self._group = None
         self._state = None
-        self._type = None
-        self._id = None
+        self._dev_type = None
+        self._dev_id = None
 
     async def _set_description(self) -> object:
         """Set the additional variables by getting the description form the devices"""
@@ -53,12 +53,12 @@ class ZeptrionDevice(object):
         base = ET.fromstring(response)
         self._name = base.find("name").text
         self._group = base.find("group").text
-        self._type = device_types[base.find("cat").text]
+        self._dev_type = device_types[base.find("cat").text]
 
         # Generate a unique ID form the host and chn variables
-        h = hashlib.sha1()
-        h.update(str(self._name + self._host + str(self._chn)).encode("utf-8"))
-        self._id = h.hexdigest()
+        id_hash = hashlib.sha1()
+        id_hash.update(str(self._name + self._host + str(self._chn)).encode("utf-8"))
+        self._dev_id = id_hash.hexdigest()
 
     async def _set_state(self) -> object:
         """Get the actual state of the device and set the variable"""
@@ -105,15 +105,15 @@ class ZeptrionDevice(object):
     @property
     def type(self) -> Optional[str]:
         """Access to protected variable"""
-        return self._type
+        return self._dev_type
 
     @property
-    def id(self) -> Optional[str]:
+    def dev_id(self) -> Optional[str]:
         """Access to protected variable"""
-        return self._id
+        return self._dev_id
 
     def __str__(self):
-        return f"Host: {self._host}\nChannel: {self._chn}\nName: {self._name}\nGroup: {self._group}\nState: {self._state}\nType: {self._type}\nID:{self._id}\n\n"
+        return f"Host: {self._host}\nChannel: {self._chn}\nName: {self._name}\nGroup: {self._group}\nState: {self._state}\nType: {self._dev_type}\nID:{self._dev_id}\n\n"
 
     def __del__(self):
         pass
@@ -125,7 +125,7 @@ class ZeptrionDevice(object):
         data: Optional[Any] = None,
         params: Optional[Mapping[str, str]] = None,
     ) -> Any:
-
+        """Async http request"""
         headers = {
             "User-Agent": USER_AGENT,
             "Accept": "*/*",

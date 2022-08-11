@@ -17,7 +17,7 @@ class ZeptrionZeroconfListener(object):
         """Init the listener."""
         self.data = []
 
-    def remove_service(self, zeroconf, type, name):
+    def remove_service(self, name):
         """remove a sevice"""
         print(f"Service ({name} removed")
 
@@ -41,13 +41,13 @@ class ZeptrionZeroconfListener(object):
 class ZeptrionRegistryDevice(object):
     """Representation of a device in the registry"""
 
-    def __init__(self, host: str, chn: int, type: str):
+    def __init__(self, host: str, chn: int, dev_type: str):
         self._host = host
         self._chn = chn
-        self._type = type
+        self._dev_type = dev_type
 
     def __str__(self):
-        return f"Host: {self._host}\nChannel: {self._chn}\nType: {self._type}\n"
+        return f"Host: {self._host}\nChannel: {self._chn}\ndev_type: {self._dev_type}\n"
 
     @property
     def host(self) -> str:
@@ -60,9 +60,9 @@ class ZeptrionRegistryDevice(object):
         return self._chn
 
     @property
-    def type(self) -> str:
-        """protected access to self._type"""
-        return self._type
+    def dev_type(self) -> str:
+        """protected access to self._dev_type"""
+        return self._dev_type
 
 
 class ZeptrionRegistry(object):
@@ -90,8 +90,10 @@ class ZeptrionRegistry(object):
                     temp_device = await ZeptrionBulb.create(
                         ZeptrionBulb, host, str(chn + 1)
                     )
-                    if temp_device.type != "NaN":
-                        device = ZeptrionRegistryDevice(host, chn + 1, temp_device.type)
+                    if temp_device.dev_type != "NaN":
+                        device = ZeptrionRegistryDevice(
+                            host, chn + 1, temp_device.dev_type
+                        )
                         self.devices.append(device)
                     await temp_device.close()
                     del temp_device
@@ -101,7 +103,7 @@ class ZeptrionRegistry(object):
             if not my_async_zeroconf:
                 await my_async_zeroconf.close()
 
-        self.devices.sort(key=lambda x: x.type)
+        self.devices.sort(key=lambda x: x.dev_type)
         return self
 
     @property
