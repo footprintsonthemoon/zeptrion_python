@@ -153,7 +153,7 @@ class ZeptrionDevice(object):
         text = await response.text()
         return text
 
-    # Session handling """
+    # Session handling
 
     async def close(self) -> None:
         """close sessions"""
