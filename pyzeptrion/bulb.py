@@ -28,7 +28,7 @@ class ZeptrionBulb(ZeptrionDevice):
         self._state = BULB_ON if int(mybase[0][0].text) > 0 else BULB_OFF
         return self
 
-    async def set_on(self):
+    async def turn_on(self):
         """turn the bulb on and update state"""
         response = await self.request(
             uri=self._post_ctrl_uri, method="POST", data={"cmd": BULB_ON}
@@ -36,7 +36,7 @@ class ZeptrionBulb(ZeptrionDevice):
         self._state = BULB_ON
         return response
 
-    async def set_off(self):
+    async def turn_off(self):
         """turn the bulb off and update state"""
         response = await self.request(
             uri=self._post_ctrl_uri, method="POST", data={"cmd": BULB_OFF}
