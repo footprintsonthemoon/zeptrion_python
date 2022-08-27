@@ -9,7 +9,15 @@ import aiohttp
 import pkg_resources
 from yarl import URL
 from .exceptions import ZeptrionConnectionError
-from .const import device_types, GET_STATE_URL, GET_DESC_URL, POST_CTRL_URL, TIMEOUT
+from .const import (
+    device_types,
+    GET_STATE_URL,
+    GET_DESC_URL,
+    POST_CTRL_URL,
+    TIMEOUT,
+    OFF_STATE,
+    ON_STATE,
+)
 
 __version__ = pkg_resources.get_distribution("setuptools").version
 USER_AGENT = f"PythonZeptrion/{__version__}"
@@ -60,14 +68,16 @@ class ZeptrionDevice(object):
         id_hash.update(str(self._name + self._host + str(self._chn)).encode("utf-8"))
         self._dev_id = id_hash.hexdigest()
 
-    async def _set_state(self) -> object:
+    async def get_state(self) -> object:
         """Get the actual state of the device and set the variable"""
         response = await self.request(
             uri=self._get_state_uri,
             method="GET",
         )
         mybase = ET.fromstring(response)
-        return mybase
+        print("state:", (mybase[0][0].text))
+        mystate = ON_STATE if int(mybase[0][0].text) > 0 else OFF_STATE
+        return mystate
 
     async def post_cmd(self, cmd):
         """Generic call to change the state of any devices"""

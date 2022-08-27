@@ -3,7 +3,14 @@
 import logging
 import aiohttp
 from pyzeptrion.device import ZeptrionDevice
-from pyzeptrion.const import BULB_DIMDOWN, BULB_DIMUP, BULB_OFF, BULB_ON
+from pyzeptrion.const import (
+    BULB_DIMDOWN,
+    BULB_DIMUP,
+    BULB_OFF,
+    BULB_ON,
+    OFF_STATE,
+    ON_STATE,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,8 +31,7 @@ class ZeptrionBulb(ZeptrionDevice):
         """Called before __init__ to assign values to the object"""
         self = ZeptrionBulb(host, chn)
         await self._set_description()
-        mybase = await self._set_state()
-        self._state = BULB_ON if int(mybase[0][0].text) > 0 else BULB_OFF
+        self._state = await self.get_state()
         return self
 
     async def turn_on(self):
@@ -33,7 +39,7 @@ class ZeptrionBulb(ZeptrionDevice):
         response = await self.request(
             uri=self._post_ctrl_uri, method="POST", data={"cmd": BULB_ON}
         )
-        self._state = BULB_ON
+        self._state = ON_STATE
         return response
 
     async def turn_off(self):
@@ -41,7 +47,7 @@ class ZeptrionBulb(ZeptrionDevice):
         response = await self.request(
             uri=self._post_ctrl_uri, method="POST", data={"cmd": BULB_OFF}
         )
-        self._state = BULB_OFF
+        self._state = OFF_STATE
         return response
 
     async def dim_down(self):
@@ -49,7 +55,7 @@ class ZeptrionBulb(ZeptrionDevice):
         response = await self.request(
             uri=self._post_ctrl_uri, method="POST", data={"cmd": BULB_DIMDOWN}
         )
-        self._state = BULB_ON
+        self._state = ON_STATE
         return response
 
     async def dim_up(self):
@@ -57,7 +63,7 @@ class ZeptrionBulb(ZeptrionDevice):
         response = await self.request(
             uri=self._post_ctrl_uri, method="POST", data={"cmd": BULB_DIMUP}
         )
-        self._state = BULB_ON
+        self._state = ON_STATE
         return response
 
     async def dim_down_t(self, t_milli: int):
@@ -68,7 +74,7 @@ class ZeptrionBulb(ZeptrionDevice):
                 method="POST",
                 data={"cmd": BULB_DIMDOWN + "_(" + str(t_milli) + ")"},
             )
-            self._state = BULB_ON
+            self._state = ON_STATE
         return response
 
     async def dim_up_t(self, t_milli: int):
@@ -79,7 +85,7 @@ class ZeptrionBulb(ZeptrionDevice):
                 method="POST",
                 data={"cmd": BULB_DIMUP + "_(" + str(t_milli) + ")"},
             )
-            self._state = BULB_ON
+            self._state = ON_STATE
         return response
 
     async def dim_t(self, t_milli: int):
@@ -90,16 +96,16 @@ class ZeptrionBulb(ZeptrionDevice):
                 method="POST",
                 data={"cmd": BULB_DIMUP + "_(" + str(t_milli) + ")"},
             )
-            self._state = BULB_ON
+            self._state = ON_STATE
         return response
 
     async def toggle(self):
         """toggle the bulb from on to off and vice-versa"""
-        cmd = BULB_OFF if self._state == BULB_ON else BULB_ON
+        cmd = BULB_OFF if self._state == ON_STATE else BULB_ON
         response = await self.request(
             uri=self._post_ctrl_uri, method="POST", data={"cmd": cmd}
         )
-        self._state = cmd
+        self._state = ON_STATE if cmd == BULB_ON else OFF_STATE
         return response
 
     # Session handling

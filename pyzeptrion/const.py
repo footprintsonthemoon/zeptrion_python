@@ -9,6 +9,8 @@ POST_CTRL_URL = "/zrap/chctrl/ch"
 
 """ Commends for the bulb """
 BULB_ON = "on"
+ON_STATE = True
+OFF_STATE = False
 BULB_OFF = "off"
 BULB_TOGGLE = "toggle"
 BULB_DIMUP = "dim_up"

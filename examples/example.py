@@ -11,9 +11,11 @@ async def main():
 
     """Create a bulb, turn it on, wait 15 seconds, turn it off"""
     my_bulb = await ZeptrionBulb.create(ZeptrionBulb, "192.168.0.181", 1)
+    print(my_bulb)
     await my_bulb.turn_on()
     print(my_bulb)
-    await asyncio.sleep(5)
+
+    await asyncio.sleep(10)
     await my_bulb.turn_off()
     print(my_bulb)
     await my_bulb.close()
