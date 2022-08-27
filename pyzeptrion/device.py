@@ -51,7 +51,7 @@ class ZeptrionDevice(object):
         """ Additional variables to represent the device """
         self._name = None
         self._group = None
-        self._state = None
+        self._state = False
         self._dev_type = None
         self._dev_id = None
 
