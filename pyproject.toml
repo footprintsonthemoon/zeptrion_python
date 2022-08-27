@@ -28,6 +28,9 @@ dependencies = [
 ]
 requires-python = ">=3.10"
 
+[tool.setuptools]
+packages = ["pyzeptrion"]
+
 [project.urls]
 homepage = "https://github.com/footprintsonthemoon/zeptrion_python"
 documentation = "https://github.com/footprintsonthemoon/zeptrion_python"
