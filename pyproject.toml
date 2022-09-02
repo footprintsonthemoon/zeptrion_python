@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyzeptrion"
-version = "0.1.7"
+version = "0.1.8"
 description = "Classes to interact with Zeptrion devices made by Feller"
 readme = "README.md"
 authors = [{ name = "Thierry Perroud", email = "astronaut@footprintsonthemoon.ch" }]
