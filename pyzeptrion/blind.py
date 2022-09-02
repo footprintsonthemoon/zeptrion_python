@@ -3,7 +3,7 @@
 import logging
 import aiohttp
 from pyzeptrion.device import ZeptrionDevice
-from pyzeptrion.const import BLIND_CLOSE, BLIND_OPEN, BLIND_STOP
+from pyzeptrion.const import BLIND_CLOSE, BLIND_OPEN, BLIND_STOP, ON_STATE, OFF_STATE
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ class ZeptrionBlind(ZeptrionDevice):
         self = ZeptrionBlind(host, chn)
         await self._set_description()
         mybase = await self._set_state()
-        self._state = BLIND_OPEN if int(mybase[0][0].text) > 0 else BLIND_CLOSE
+        self._state = ON_STATE if int(mybase[0][0].text) > 0 else OFF_STATE
         return self
 
     async def move_open(self):
@@ -34,7 +34,7 @@ class ZeptrionBlind(ZeptrionDevice):
         response = await self.request(
             uri=self._post_ctrl_uri, method="POST", data={"cmd": BLIND_OPEN}
         )
-        self._state = BLIND_OPEN
+        self._state = ON_STATE
         return response
 
     async def move_close(self):
@@ -42,7 +42,7 @@ class ZeptrionBlind(ZeptrionDevice):
         response = await self.request(
             uri=self._post_ctrl_uri, method="POST", data={"cmd": BLIND_CLOSE}
         )
-        self._state = BLIND_CLOSE
+        self._state = OFF_STATE
         return response
 
     async def stop(self):
@@ -50,7 +50,7 @@ class ZeptrionBlind(ZeptrionDevice):
         response = await self.request(
             uri=self._post_ctrl_uri, method="POST", data={"cmd": BLIND_STOP}
         )
-        self._state = BLIND_STOP
+        self._state = OFF_STATE
         return response
 
     # Session handling
