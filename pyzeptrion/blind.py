@@ -25,8 +25,7 @@ class ZeptrionBlind(ZeptrionDevice):
         """Called before __init__ to assign values to the object created"""
         self = ZeptrionBlind(host, chn)
         await self._set_description()
-        mybase = await self.get_state()
-        self._state = ON_STATE if int(mybase[0][0].text) > 0 else OFF_STATE
+        self._state = await self.get_state()
         return self
 
     async def move_open(self):
