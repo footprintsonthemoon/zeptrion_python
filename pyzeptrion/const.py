@@ -16,12 +16,10 @@ BULB_TOGGLE = "toggle"
 BULB_DIMUP = "dim_up"
 BULB_DIMDOWN = "dim_down"
 
-
 """ commands for the blind """
 BLIND_CLOSE = "move_close"
 BLIND_OPEN = "move_open"
 BLIND_STOP = "stop"
-
 
 """
 Zeptrion device types.

@@ -14,7 +14,6 @@ from pyzeptrion.const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-
 class ZeptrionBulb(ZeptrionDevice):
     """A class for a Zeptrion bulb, derived from the ZetprionDevice class."""
 
